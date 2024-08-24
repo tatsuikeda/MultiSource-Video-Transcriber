@@ -1,19 +1,21 @@
 # MultiSource Video Transcriber (MVT)
 
-MultiSource Video Transcriber (MVT) is a powerful tool that downloads audio from a wide variety of online video sources, transcribes them using OpenAI's Whisper, and provides the option for summarization. It's designed to work with multiple video URLs from different platforms and can cache results for efficiency in subsequent runs. It runs locally on your PC so no credits or tokens are required from the cloud. 
+MultiSource Video Transcriber (MVT) is a powerful tool that downloads audio from a wide variety of online video sources, transcribes them using OpenAI's Whisper, and provides the option for summarization. It's designed to work with multiple video URLs from different platforms and can cache results for efficiency in subsequent runs. It runs locally on your PC, so no credits or tokens are required from the cloud. 
 
 ## Features
 
 - Download audio from various video sources (YouTube, Reddit, Twitter, and any other platform supported by yt-dlp)
-- Transcribe audio using Whisper
+- Transcribe audio using Whisper with GPU acceleration (if available)
+- Choose from five different Whisper models: tiny, base, small, medium, and large
 - Cache processed URLs to skip redundant downloads and transcriptions
 - Measure transcription speed and performance
-- Unit tests for key functionalities
+- Detailed logging for troubleshooting
 
 ## Prerequisites
 
-- Python 3.11
+- Python 3.11 or later
 - FFmpeg installed and available in your system PATH
+- NVIDIA GPU with CUDA support (optional, for GPU acceleration)
 
 ## Setup
 
@@ -23,9 +25,9 @@ MultiSource Video Transcriber (MVT) is a powerful tool that downloads audio from
    cd MultiSource-Video-Transcriber
    ```
 
-2. Create and activate a Python 3.11 virtual environment:
+2. Create and activate a Python virtual environment:
    ```
-   python3.11 -m venv mvt
+   python -m venv mvt
    source mvt/bin/activate  # On Windows, use `mvt\Scripts\activate`
    ```
 
@@ -38,40 +40,40 @@ MultiSource Video Transcriber (MVT) is a powerful tool that downloads audio from
 
 1. Run the main script:
    ```
-   python video_transcription.py
+   python multisource_video_transcriber.py
    ```
 
 2. When prompted, enter the video URLs you want to process. These can be from various platforms, including but not limited to YouTube, Reddit, and Twitter. Press Enter without typing a URL to finish input.
 
-3. The script will download the audio, transcribe it, and save the full transcript.
+3. Choose a Whisper model when prompted (1-5 for tiny, base, small, medium, or large).
 
-4. After processing, you'll see timing information about the transcription process.
+4. The script will download the audio, transcribe it using the selected Whisper model, and save the full transcript.
+
+5. After processing, you'll see timing information about the transcription process.
 
 ## Output
 
-- The full transcript will be saved as `full_transcription.txt` in the same directory as the script.
+- The full transcript will be saved as `full_transcription.txt` in the `transcription_output` directory.
 - You can find the exact path of the transcript file in the console output at the end of the script execution.
+- A log file `transcription_debug.log` will be created with detailed information about the transcription process.
 
-## Running Unit Tests
+## GPU Acceleration
 
-To run the unit tests:
-
-```
-python -m unittest test_multisource_video_transcriber.py
-```
+If you have an NVIDIA GPU with CUDA support, the script will automatically use it for transcription, significantly speeding up the process. Make sure you have the appropriate CUDA toolkit and GPU-enabled PyTorch installed.
 
 ## Notes
 
 - The script uses yt-dlp, which supports a wide range of video platforms. For a full list of supported sites, refer to the [yt-dlp documentation](https://github.com/yt-dlp/yt-dlp/blob/master/supportedsites.md).
 - The script caches processed URLs. If you run the script with the same URLs, it will skip the download and transcription steps and use the existing transcription.
 - Make sure you have sufficient disk space for audio downloads and transcription files.
-- The transcription quality depends on the Whisper model used. You can adjust this in the script if needed.
+- Larger Whisper models (especially the "large" model) require more computational resources and may take longer to process, especially on CPU.
 
 ## Troubleshooting
 
 - If you encounter any issues with FFmpeg, ensure it's correctly installed and available in your system PATH.
 - For any dependency issues, try running the `install_dependencies.py` script again or install the required packages manually.
 - If a particular video fails to download, check if yt-dlp supports that platform or if the video is still available.
+- Check the `transcription_debug.log` file for detailed information about any errors or issues encountered during the transcription process.
 
 ## Contributing
 

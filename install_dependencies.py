@@ -36,11 +36,7 @@ def main():
         "openai-whisper",
         "yt-dlp",
         "tqdm",
-        "transformers",
         "torch",
-        "sentencepiece",
-        "nltk",
-        "requests",
         "termcolor"
     ]
 
@@ -50,6 +46,18 @@ def main():
             print(f"{dep} installed successfully.")
         except subprocess.CalledProcessError:
             print(f"Failed to install {dep}. Please check the log file and install it manually.")
+
+    # Special installation for PyTorch with CUDA support
+    try:
+        import torch
+        if torch.cuda.is_available():
+            print("CUDA is available. PyTorch with CUDA support is already installed.")
+        else:
+            print("CUDA is not available. Installing PyTorch with CPU support.")
+            install("torch")
+    except ImportError:
+        print("PyTorch is not installed. Installing PyTorch with CPU support.")
+        install("torch")
 
     logging.info("Checking for FFmpeg...")
     try:
