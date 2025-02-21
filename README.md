@@ -4,7 +4,12 @@ MultiSource Video Transcriber (MVT) is a powerful tool that downloads audio from
 
 ## Features
 
-- Download audio from various video sources (YouTube, Reddit, Twitter, and any other platform supported by yt-dlp)
+- Download audio/video from various video sources (YouTube, Facebook, and any other platform supported by yt-dlp)
+- Automatic Firefox cookie handling for accessing private/restricted videos
+- Two modes of operation:
+  1. Download and transcribe audio
+  2. Download video only (QuickTime compatible MP4)
+- Consistent file naming using video metadata (uploader, video ID, title)
 - Transcribe audio using Whisper with GPU acceleration (if available)
 - Choose from five different Whisper models: tiny, base, small, medium, and large
 - Cache processed URLs to skip redundant downloads and transcriptions
@@ -15,6 +20,7 @@ MultiSource Video Transcriber (MVT) is a powerful tool that downloads audio from
 
 - Python 3.11 or later
 - FFmpeg installed and available in your system PATH
+- Firefox browser installed (for cookie handling)
 - NVIDIA GPU with CUDA support (optional, for GPU acceleration)
 
 ## Setup
@@ -38,24 +44,38 @@ MultiSource Video Transcriber (MVT) is a powerful tool that downloads audio from
 
 ## Usage
 
-1. Run the main script:
+1. Create a `urls.txt` file with video URLs (one per line), or enter URLs manually when prompted.
+
+2. Run the main script:
    ```
    python multisource_video_transcriber.py
    ```
 
-2. When prompted, enter the video URLs you want to process. These can be from various platforms, including but not limited to YouTube, Reddit, and Twitter. Press Enter without typing a URL to finish input.
+3. Choose your mode:
+   - Mode 1: Download and transcribe audio
+   - Mode 2: Download video only (QuickTime compatible MP4)
 
-3. Choose a Whisper model when prompted (1-5 for tiny, base, small, medium, or large).
+4. Choose a Whisper model when prompted (1-5 for tiny, base, small, medium, or large).
 
-4. The script will download the audio, transcribe it using the selected Whisper model, and save the full transcript.
+5. Select a Firefox profile when prompted (for handling cookies and private videos).
 
-5. After processing, you'll see timing information about the transcription process.
+6. The script will process your videos according to the selected mode.
 
-## Output
+## Output Files
 
-- The full transcript will be saved as `full_transcription.txt` in the `transcription_output` directory.
-- You can find the exact path of the transcript file in the console output at the end of the script execution.
-- A log file `transcription_debug.log` will be created with detailed information about the transcription process.
+Files are saved with consistent naming across platforms:
+
+- Videos: `video_output/uploader_videoID_title.mp4`
+- Audio: `transcription_output/uploader_videoID_title.m4a`
+- Transcripts: `transcription_output/uploader_videoID_title_transcript.txt`
+- Combined transcripts: `transcription_output/combined_transcription.txt`
+
+## Firefox Profile Handling
+
+The script automatically detects Firefox profiles and allows you to choose which profile to use for cookie handling. This enables:
+- Access to age-restricted content
+- Access to private videos (if you're logged in)
+- Better download speeds and reliability
 
 ## GPU Acceleration
 
@@ -65,7 +85,7 @@ If you have an NVIDIA GPU with CUDA support, the script will automatically use i
 
 - The script uses yt-dlp, which supports a wide range of video platforms. For a full list of supported sites, refer to the [yt-dlp documentation](https://github.com/yt-dlp/yt-dlp/blob/master/supportedsites.md).
 - The script caches processed URLs. If you run the script with the same URLs, it will skip the download and transcription steps and use the existing transcription.
-- Make sure you have sufficient disk space for audio downloads and transcription files.
+- Make sure you have sufficient disk space for audio/video downloads and transcription files.
 - Larger Whisper models (especially the "large" model) require more computational resources and may take longer to process, especially on CPU.
 
 ## Troubleshooting
@@ -74,6 +94,7 @@ If you have an NVIDIA GPU with CUDA support, the script will automatically use i
 - For any dependency issues, try running the `install_dependencies.py` script again or install the required packages manually.
 - If a particular video fails to download, check if yt-dlp supports that platform or if the video is still available.
 - Check the `transcription_debug.log` file for detailed information about any errors or issues encountered during the transcription process.
+- If you have issues with private videos, make sure you've selected the correct Firefox profile where you're logged in.
 
 ## Contributing
 
