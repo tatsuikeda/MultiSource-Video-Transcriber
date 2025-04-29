@@ -132,40 +132,17 @@ def find_firefox_profile():
             print("Please enter a valid number")
 
 def check_url(url, firefox_profile=None):
-    """Check if a URL is downloadable with yt-dlp"""
-    # More browser-like headers
-    headers = {
-        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:123.0) Gecko/20100101 Firefox/123.0',
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
-        'Accept-Language': 'en-US,en;q=0.5',
-        'Accept-Encoding': 'gzip, deflate, br',
-        'DNT': '1',
-        'Connection': 'keep-alive',
-        'Upgrade-Insecure-Requests': '1',
-        'Sec-Fetch-Dest': 'document',
-        'Sec-Fetch-Mode': 'navigate',
-        'Sec-Fetch-Site': 'none',
-        'Sec-Fetch-User': '?1',
-    }
-    
+    """Check if a URL is downloadable with yt-dlp (using minimal options)"""
+    # Minimal options for checking URL validity, closer to CLI defaults
     ydl_opts = {
         'simulate': True,
-        'quiet': False,
-        'no_warnings': False,
-        'ignoreerrors': False,
         'verbose': True,
-        'format': 'bestaudio[ext=m4a]/bestaudio/best',
-        'extract_flat': False,
-        'no_playlist': True,
-        'youtube_include_dash_manifest': False,
-        'http_headers': headers,
-        'extractor_args': {'youtube': {
-            'skip': ['hls'],
-        }},
-        'socket_timeout': 30,
-        'retries': 10,
-        'ignoreconfig': True,  # Always ignore global config
-        'cachedir': False,   # Disable caching
+        'no_playlist': True,  # Still useful to prevent accidental playlist downloads
+        'ignoreconfig': True, # Keep this from previous debugging
+        'cachedir': False,    # Keep this from previous debugging
+        # Removed: format, quiet, no_warnings, ignoreerrors, extract_flat,
+        #          youtube_include_dash_manifest, http_headers, extractor_args,
+        #          socket_timeout, retries
     }
 
     # Add cookies from Firefox if profile path exists
