@@ -116,16 +116,10 @@ def find_firefox_profile():
     
     while True:
         try:
-            choice = input("\nChoose a profile number (or press Enter for default): ").strip()
+            choice = input("\nChoose a profile number (or press Enter to skip using cookies): ").strip()
             if not choice:  # If user just presses Enter
-                # Try to find a default profile
-                for profile in profiles:
-                    if 'default' in profile.lower():
-                        print(f"Using default profile: {os.path.basename(profile)}")
-                        return profile
-                # If no default found, use the first profile
-                print(f"Using first profile: {os.path.basename(profiles[0])}")
-                return profiles[0]
+                print("Skipping cookie usage.")
+                return None  # Return None to indicate no profile selected
             
             choice = int(choice)
             if 1 <= choice <= len(profiles):
