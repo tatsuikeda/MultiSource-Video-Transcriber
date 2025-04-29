@@ -57,32 +57,14 @@ def main():
             print(f"Failed to install {dep}. Please check the log file and install it manually.")
 
     # Special installation for PyTorch with CUDA support
-    logging.info("Installing PyTorch...")
     try:
-        # First try to import torch to check if it's already installed
         import torch
-        print(f"PyTorch {torch.__version__} is already installed.")
-        
-        # Check CUDA availability
         if torch.cuda.is_available():
-            print("CUDA is available. PyTorch with CUDA support is working.")
+            print("CUDA is available. PyTorch with CUDA support is already installed.")
         else:
             print("CUDA is not available. PyTorch will use CPU only.")
-            
-        # Check compatibility with NumPy
-        try:
-            import numpy as np
-            # Test basic torch-numpy interoperability
-            test_array = np.array([1, 2, 3])
-            test_tensor = torch.from_numpy(test_array)
-            print("PyTorch and NumPy compatibility confirmed.")
-        except Exception as e:
-            logging.error(f"PyTorch and NumPy compatibility issue: {str(e)}")
-            print("PyTorch and NumPy compatibility issue detected.")
-            print("Reinstalling PyTorch after proper NumPy installation...")
-            install("torch")
     except ImportError:
-        print("PyTorch is not installed. Installing PyTorch...")
+        print("PyTorch is not installed. Installing PyTorch with CPU support.")
         install("torch")
 
     logging.info("Checking for FFmpeg...")
