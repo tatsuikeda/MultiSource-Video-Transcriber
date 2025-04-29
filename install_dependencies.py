@@ -32,11 +32,20 @@ def main():
     logging.info("Starting dependency installation process")
     print(f"Installation log will be saved to: {os.path.abspath(log_file)}")
 
+    # First ensure numpy compatibility - install correct version before other packages
+    logging.info("Ensuring numpy compatibility (version < 2.0)...")
+    try:
+        install("numpy<2.0")
+        print("NumPy < 2.0 installed successfully.")
+    except subprocess.CalledProcessError:
+        print("Failed to install compatible NumPy. Please install manually with: pip install 'numpy<2.0'")
+        sys.exit(1)  # Exit if this critical dependency fails
+
+    # Install other dependencies
     dependencies = [
         "openai-whisper",
         "yt-dlp",
         "tqdm",
-        "torch",
         "termcolor"
     ]
 
@@ -48,15 +57,32 @@ def main():
             print(f"Failed to install {dep}. Please check the log file and install it manually.")
 
     # Special installation for PyTorch with CUDA support
+    logging.info("Installing PyTorch...")
     try:
+        # First try to import torch to check if it's already installed
         import torch
+        print(f"PyTorch {torch.__version__} is already installed.")
+        
+        # Check CUDA availability
         if torch.cuda.is_available():
-            print("CUDA is available. PyTorch with CUDA support is already installed.")
+            print("CUDA is available. PyTorch with CUDA support is working.")
         else:
-            print("CUDA is not available. Installing PyTorch with CPU support.")
+            print("CUDA is not available. PyTorch will use CPU only.")
+            
+        # Check compatibility with NumPy
+        try:
+            import numpy as np
+            # Test basic torch-numpy interoperability
+            test_array = np.array([1, 2, 3])
+            test_tensor = torch.from_numpy(test_array)
+            print("PyTorch and NumPy compatibility confirmed.")
+        except Exception as e:
+            logging.error(f"PyTorch and NumPy compatibility issue: {str(e)}")
+            print("PyTorch and NumPy compatibility issue detected.")
+            print("Reinstalling PyTorch after proper NumPy installation...")
             install("torch")
     except ImportError:
-        print("PyTorch is not installed. Installing PyTorch with CPU support.")
+        print("PyTorch is not installed. Installing PyTorch...")
         install("torch")
 
     logging.info("Checking for FFmpeg...")
