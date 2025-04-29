@@ -178,22 +178,8 @@ def test_ffprobe(file_path):
 
 def download_audio(url, output_path, file_num, total_files, firefox_profile=None, max_retries=3, delay=5):
     """Download audio from a video URL with retries"""
-    headers = {
-        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:123.0) Gecko/20100101 Firefox/123.0',
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
-        'Accept-Language': 'en-US,en;q=0.5',
-        'Accept-Encoding': 'gzip, deflate, br',
-        'DNT': '1',
-        'Connection': 'keep-alive',
-        'Upgrade-Insecure-Requests': '1',
-        'Sec-Fetch-Dest': 'document',
-        'Sec-Fetch-Mode': 'navigate',
-        'Sec-Fetch-Site': 'none',
-        'Sec-Fetch-User': '?1',
-    }
-    
+    # Simplified options, keeping only essentials for download/postprocessing
     output_dir = os.path.dirname(output_path)
-    
     ydl_opts = {
         'format': 'bestaudio[ext=m4a]/bestaudio/best',
         'postprocessors': [{
@@ -203,22 +189,15 @@ def download_audio(url, output_path, file_num, total_files, firefox_profile=None
         }],
         'outtmpl': os.path.join(output_dir, '%(uploader)s_%(id)s_%(title)s.%(ext)s'),
         'progress_hooks': [TqdmProgressBar(file_num, total_files)],
-        'nocheckcertificate': True,
-        'ignoreerrors': False,
-        'no_warnings': False,
-        'quiet': False,
         'verbose': True,
-        'youtube_include_dash_manifest': False,
-        'extract_flat': False,
         'no_playlist': True,
-        'writesubtitles': False,
-        'writeautomaticsub': False,
-        'http_headers': headers,
-        'extractor_args': {'youtube': {
-            'skip': ['hls'],
-        }},
-        'socket_timeout': 30,
-        'retries': 10,
+        'ignoreconfig': True,
+        'cachedir': False,
+        # Removed: quiet, no_warnings, ignoreerrors, nocheckcertificate, 
+        #          youtube_include_dash_manifest, extract_flat, 
+        #          writesubtitles, writeautomaticsub, http_headers, 
+        #          extractor_args, socket_timeout, retries 
+        #          (using script's retry logic instead)
     }
 
     if firefox_profile:
@@ -430,38 +409,20 @@ def load_urls_from_file(filename):
 
 def download_video(url, output_path, file_num, total_files, firefox_profile=None, max_retries=3, delay=5):
     """Download video in MP4 format"""
-    headers = {
-        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:123.0) Gecko/20100101 Firefox/123.0',
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
-        'Accept-Language': 'en-US,en;q=0.5',
-        'Accept-Encoding': 'gzip, deflate, br',
-        'DNT': '1',
-        'Connection': 'keep-alive',
-        'Upgrade-Insecure-Requests': '1',
-        'Sec-Fetch-Dest': 'document',
-        'Sec-Fetch-Mode': 'navigate',
-        'Sec-Fetch-Site': 'none',
-        'Sec-Fetch-User': '?1',
-    }
-    
+    # Simplified options, keeping only essentials for download/merging
     output_dir = os.path.dirname(output_path)
-    
     ydl_opts = {
         'format': 'bv*[ext=mp4]+ba[ext=m4a]/b[ext=mp4] / bv*+ba/b',
         'merge_output_format': 'mp4',
         'outtmpl': os.path.join(output_dir, '%(uploader)s_%(id)s_%(title)s.%(ext)s'),
         'progress_hooks': [TqdmProgressBar(file_num, total_files)],
-        'nocheckcertificate': True,
-        'ignoreerrors': False,
-        'no_warnings': False,
-        'quiet': False,
         'verbose': True,
-        'http_headers': headers,
-        'extractor_args': {'youtube': {
-            'skip': ['hls'],
-        }},
-        'socket_timeout': 30,
-        'retries': 10,
+        'no_playlist': True,
+        'ignoreconfig': True,
+        'cachedir': False,
+        # Removed: quiet, no_warnings, ignoreerrors, nocheckcertificate, 
+        #          http_headers, extractor_args, socket_timeout, retries
+        #          (using script's retry logic instead)
     }
 
     if firefox_profile:
