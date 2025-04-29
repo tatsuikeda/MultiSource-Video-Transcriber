@@ -175,6 +175,7 @@ def check_url(url, firefox_profile=None):
     # Add cookies from Firefox if profile path exists
     if firefox_profile:
         ydl_opts['cookiesfrombrowser'] = ('firefox', firefox_profile)
+        ydl_opts['ignoreconfig'] = True  # Ignore global config if profile is specified
         print(f"Using Firefox profile: {firefox_profile}")
 
     try:
@@ -250,6 +251,7 @@ def download_audio(url, output_path, file_num, total_files, firefox_profile=None
 
     if firefox_profile:
         ydl_opts['cookiesfrombrowser'] = ('firefox', firefox_profile)
+        ydl_opts['ignoreconfig'] = True  # Ignore global config if profile is specified
         print(f"Using Firefox profile: {firefox_profile}")
 
     print(f"yt-dlp version: {yt_dlp.version.__version__}")
@@ -493,6 +495,7 @@ def download_video(url, output_path, file_num, total_files, firefox_profile=None
 
     if firefox_profile:
         ydl_opts['cookiesfrombrowser'] = ('firefox', firefox_profile)
+        ydl_opts['ignoreconfig'] = True  # Ignore global config if profile is specified
         print(f"Using Firefox profile: {firefox_profile}")
 
     print(f"yt-dlp version: {yt_dlp.version.__version__}")
