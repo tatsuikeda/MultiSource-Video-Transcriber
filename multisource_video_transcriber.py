@@ -165,6 +165,7 @@ def check_url(url, firefox_profile=None):
         'socket_timeout': 30,
         'retries': 10,
         'ignoreconfig': True,  # Always ignore global config
+        'cachedir': False,   # Disable caching
     }
 
     # Add cookies from Firefox if profile path exists
