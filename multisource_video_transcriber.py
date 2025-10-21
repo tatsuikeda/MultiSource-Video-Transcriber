@@ -12,6 +12,8 @@ from termcolor import colored
 import torch
 import re
 import yt_dlp
+import urllib.request
+from packaging import version
 
 # Set up logging
 log_file = 'transcription_debug.log'
@@ -36,7 +38,8 @@ def check_dependencies():
         "yt_dlp",
         "tqdm",
         "termcolor",
-        "torch"
+        "torch",
+        "packaging"
     ]
     missing = []
 
@@ -64,6 +67,49 @@ def check_dependencies():
         sys.exit(1)
 
 import whisper
+
+def check_ytdlp_version():
+    """Check if yt-dlp is up to date and prompt for update if needed"""
+    try:
+        # Get current version
+        current_version = yt_dlp.version.__version__
+
+        # Get latest version from PyPI
+        print("Checking yt-dlp version...")
+        try:
+            with urllib.request.urlopen('https://pypi.org/pypi/yt-dlp/json', timeout=5) as response:
+                data = json.loads(response.read().decode())
+                latest_version = data['info']['version']
+        except Exception as e:
+            logging.warning(f"Could not check for yt-dlp updates: {str(e)}")
+            print(f"Current yt-dlp version: {current_version} (update check failed)")
+            return
+
+        # Compare versions
+        if version.parse(current_version) < version.parse(latest_version):
+            print(f"\nyt-dlp update available!")
+            print(f"  Current version: {current_version}")
+            print(f"  Latest version:  {latest_version}")
+            print(f"\nOutdated yt-dlp may cause download failures (403 errors, missing formats, etc.)")
+
+            update = input("Update yt-dlp now? (y/n): ").lower().strip()
+            if update == 'y':
+                print("\nUpdating yt-dlp...")
+                try:
+                    subprocess.check_call([sys.executable, "-m", "pip", "install", "--upgrade", "yt-dlp"])
+                    print("yt-dlp updated successfully! Please restart the script to use the new version.")
+                    sys.exit(0)
+                except subprocess.CalledProcessError as e:
+                    logging.error(f"Failed to update yt-dlp: {str(e)}")
+                    print(f"Failed to update yt-dlp. You can update manually with: pip install --upgrade yt-dlp")
+            else:
+                print("Continuing with current version...")
+        else:
+            print(f"yt-dlp is up to date (version {current_version})")
+
+    except Exception as e:
+        logging.warning(f"Error checking yt-dlp version: {str(e)}")
+        print(f"Could not verify yt-dlp version. Continuing anyway...")
 
 class TqdmProgressBar(object):
     def __init__(self, file_num, total_files):
@@ -470,7 +516,10 @@ def download_video(url, output_path, file_num, total_files, firefox_profile=None
 def main():
     logging.info("Starting the process")
     check_dependencies()
-    
+
+    # Check yt-dlp version and prompt for update if needed
+    check_ytdlp_version()
+
     current_dir = os.getcwd()
     logging.info(f"Current working directory: {current_dir}")
     

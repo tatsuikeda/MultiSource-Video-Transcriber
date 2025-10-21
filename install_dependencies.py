@@ -46,7 +46,8 @@ def main():
         "openai-whisper",
         "yt-dlp",
         "tqdm",
-        "termcolor"
+        "termcolor",
+        "packaging"
     ]
 
     for dep in dependencies:
