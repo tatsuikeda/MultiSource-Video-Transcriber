@@ -140,9 +140,13 @@ def check_url(url, firefox_profile=None):
         'no_playlist': True,  # Still useful to prevent accidental playlist downloads
         'ignoreconfig': True, # Keep this from previous debugging
         'cachedir': False,    # Keep this from previous debugging
-        # Removed: format, quiet, no_warnings, ignoreerrors, extract_flat,
-        #          youtube_include_dash_manifest, http_headers, extractor_args,
-        #          socket_timeout, retries
+        # YouTube workarounds to bypass bot detection
+        'extractor_args': {
+            'youtube': {
+                'player_client': ['android', 'web'],
+                'player_skip': ['webpage', 'configs'],
+            }
+        },
     }
 
     # Add cookies from Firefox if profile path exists
@@ -193,11 +197,13 @@ def download_audio(url, output_path, file_num, total_files, firefox_profile=None
         'no_playlist': True,
         'ignoreconfig': True,
         'cachedir': False,
-        # Removed: quiet, no_warnings, ignoreerrors, nocheckcertificate, 
-        #          youtube_include_dash_manifest, extract_flat, 
-        #          writesubtitles, writeautomaticsub, http_headers, 
-        #          extractor_args, socket_timeout, retries 
-        #          (using script's retry logic instead)
+        # YouTube workarounds to bypass bot detection
+        'extractor_args': {
+            'youtube': {
+                'player_client': ['android', 'web'],
+                'player_skip': ['webpage', 'configs'],
+            }
+        },
     }
 
     if firefox_profile:
@@ -420,9 +426,13 @@ def download_video(url, output_path, file_num, total_files, firefox_profile=None
         'no_playlist': True,
         'ignoreconfig': True,
         'cachedir': False,
-        # Removed: quiet, no_warnings, ignoreerrors, nocheckcertificate, 
-        #          http_headers, extractor_args, socket_timeout, retries
-        #          (using script's retry logic instead)
+        # YouTube workarounds to bypass bot detection
+        'extractor_args': {
+            'youtube': {
+                'player_client': ['android', 'web'],
+                'player_skip': ['webpage', 'configs'],
+            }
+        },
     }
 
     if firefox_profile:
